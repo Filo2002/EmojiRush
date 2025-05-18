@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Rush 🚀</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --danger: #ef233c;
+            --warning: #ffbe0b;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            color: var(--light);
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        .page-container {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+        
+        .ad-sidebar {
+            width: 160px;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .ad-banner {
+            width: 100%;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9em;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: auto;
+            padding: 25px;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        h1 {
+            margin-bottom: 15px;
+            font-size: 2.5em;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+            transform: scaleX(0.8);
+            border-radius: 3px;
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 0.95em;
+        }
+        
+        .lives {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .life {
+            color: var(--danger);
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+        
+        .life.lost {
+            transform: scale(0.8);
+            opacity: 0.6;
+        }
+        
+        .scenario {
+            font-size: 1.6em;
+            margin: 20px 0;
+            font-weight: 600;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            line-height: 1.4;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .scenario::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 65%, rgba(255,255,255,0.05) 100%);
+            pointer-events: none;
+        }
+        
+        .emoji-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 12px;
+            margin: 25px 0;
+            min-height: 250px;
+        }
+        
+        .emoji-btn {
+            font-size: 2.5em;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 15px;
+            transition: all 0.2s ease;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .emoji-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .emoji-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .emoji-btn:hover::before {
+            opacity: 1;
+        }
+        
+        .emoji-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .result {
+            font-size: 1.4em;
+            margin: 15px 0;
+            min-height: 40px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .correct {
+            color: var(--success);
+            text-shadow: 0 2px 5px rgba(76, 201, 240, 0.3);
+        }
+        
+        .wrong {
+            color: var(--danger);
+            text-shadow: 0 2px 5px rgba(239, 35, 60, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(63, 55, 201, 0.4);
+        }
+        
+        button:hover::after {
+            opacity: 1;
+        }
+        
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(63, 55, 201, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        select {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            appearance: none;
+            outline: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        select:focus {
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+        
+        select option {
+            background: var(--dark);
+        }
+        
+        .timer-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timer-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f72585, #4361ee);
+            width: 100%;
+            transition: width 0.1s linear;
+            border-radius: 5px;
+            position: relative;
+        }
+        
+        .timer-bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 2s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .streak {
+            font-size: 1.2em;
+            margin-top: 10px;
+            color: var(--warning);
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(255, 190, 11, 0.3);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .game-over {
+            font-size: 2.2em;
+            color: var(--danger);
+            margin: 15px 0;
+            font-weight: 700;
+            text-shadow: 0 3px 10px rgba(239, 35, 60, 0.4);
+            animation: bounce 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+        
+        .final-score {
+            font-size: 1.6em;
+            margin: 15px 0;
+            color: white;
+        }
+        
+        .restart-btn {
+            background: var(--accent);
+            font-size: 1.1em;
+            padding: 12px 25px;
+            box-shadow: 0 5px 20px rgba(247, 37, 133, 0.4);
+        }
+        
+        .ad-bottom {
+            width: 100%;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9em;
+            text-align: center;
+            padding: 10px;
+            margin-top: auto;
+        }
+        
+        /* Popup introduttivo */
+        .intro-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+        
+        .popup-content {
+            background: var(--background);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: popIn 0.4s ease-out;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .popup-content h2 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+        
+        .popup-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .popup-content ul {
+            margin: 15px 0 20px 20px;
+        }
+        
+        .popup-content li {
+            margin-bottom: 8px;
+        }
+        
+        .settings-group {
+            margin: 20px 0;
+        }
+        
+        .settings-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .settings-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+        }
+        
+        .start-btn {
+            background: var(--accent);
+            margin: 20px auto 0;
+            display: block;
+            padding: 12px 30px;
+            font-size: 1.1em;
+        }
+        
+        /* Popup statistiche */
+        .stats-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+        
+        .stats-content {
+            background: var(--background);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: popIn 0.4s ease-out;
+        }
+        
+        .stats-content h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .stats-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* Animazioni */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .ad-sidebar {
+                width: 120px;
+            }
+            
+            .ad-banner {
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .ad-sidebar {
+                display: none;
+            }
+            
+            .container {
+                max-width: 700px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .scenario {
+                font-size: 1.4em;
+                min-height: 70px;
+                padding: 15px;
+            }
+            
+            .emoji-btn {
+                font-size: 2em;
+            }
+            
+            .popup-content, .stats-content {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .stat-box {
+                padding: 6px 10px;
+                font-size: 0.85em;
+            }
+            
+            .emoji-container {
+                grid-template-columns: repeat(3, 1fr);
+                min-height: auto;
+                gap: 10px;
+            }
+            
+            .emoji-btn {
+                font-size: 1.8em;
+            }
+            
+            .scenario {
+                font-size: 1.2em;
+            }
+            
+            .result {
+                font-size: 1.2em;
+            }
+            
+            .game-over {
+                font-size: 1.8em;
+            }
+            
+            .final-score {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Popup introduttivo -->
+    <div id="intro-popup" class="intro-popup">
+        <div class="popup-content">
+            <h2 id="welcome-title">Emoji Rush 🚀</h2>
+            <p id="welcome-text">Indovina l'emoji corretta per ogni situazione prima che il tempo scada!</p>
+            
+            <h3 id="how-to-play">Come giocare:</h3>
+            <ul>
+                <li id="rule1">Leggi la situazione descritta</li>
+                <li id="rule2">Scegli l'emoji che meglio rappresenta la situazione</li>
+                <li id="rule3">Rispondi prima che la barra del tempo si esaurisca</li>
+                <li id="rule4">Le risposte corrette consecutive aumentano il tuo punteggio!</li>
+                <li id="rule5">Hai 3 vite e 3 skip a disposizione</li>
+            </ul>
+            
+            <div class="settings-group">
+                <label for="language-select" id="language-label">Lingua:</label>
+                <select id="language-select" class="language-select">
+                    <option value="auto" id="auto-lang">Auto (Browser)</option>
+                    <option value="it">Italiano</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+            
+            <div class="settings-group">
+                <label for="difficulty-select" id="difficulty-label">Livello di difficoltà:</label>
+                <select id="difficulty-select" class="difficulty-select">
+                    <option value="6" id="easy-level">Facile</option>
+                    <option value="9" id="medium-level" selected>Medio</option>
+                    <option value="12" id="hard-level">Difficile</option>
+                </select>
+            </div>
+            
+            <button class="start-btn" onclick="startGame()">
+                <span id="start-button">Inizia a giocare!</span>
+                <span>🎮</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Popup statistiche fine gioco -->
+    <div id="stats-popup" class="stats-popup">
+        <div class="stats-content">
+            <h2 id="stats-title">Statistiche Gioco</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="final-score-stat">0</div>
+                    <div class="stat-label" id="score-label">Punteggio</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="high-score-stat">0</div>
+                    <div class="stat-label" id="highscore-label">Record</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="correct-answers">0</div>
+                    <div class="stat-label" id="correct-label">Risposte Corrette</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="wrong-answers">0</div>
+                    <div class="stat-label" id="wrong-label">Risposte Sbagliate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="max-streak">0</div>
+                    <div class="stat-label" id="streak-label">Serie Massima</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="skips-used">0/3</div>
+                    <div class="stat-label" id="skips-label">Skip Usati</div>
+                </div>
+            </div>
+            
+            <div class="stats-buttons">
+                <button class="restart-btn" onclick="restartFromStats()">
+                    <span id="play-again-button">Gioca di nuovo</span>
+                    <span>🔄</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-container">
+        <div class="ad-sidebar">
+            <div class="ad-banner" id="ad-left-1">Banner Pubblcità<br>(160x250)</div>
+            <div class="ad-banner" id="ad-left-2">Banner Pubblcità<br>(160x250)</div>
+        </div>
+        
+        <div class="main-content">
+            <div class="container">
+                <h1 id="game-title">Emoji Rush 🚀</h1>
+                
+                <div class="game-header">
+                    <div class="stats">
+                        <div class="stat-box">
+                            <span>🏆</span>
+                            <span id="score">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span>👑</span>
+                            <span id="high-score">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span>⏭️</span>
+                            <span id="skips">3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <span>🌐</span>
+                        <select id="language-change" onchange="changeLanguage()">
+                            <option value="it">IT</option>
+                            <option value="en">EN</option>
+                            <option value="es">ES</option>
+                            <option value="fr">FR</option>
+                            <option value="de">DE</option>
+                        </select>
+                    </div>
+                    
+                    <div class="stat-box lives">
+                        <span>❤️</span>
+                        <span id="lives">❤️❤️❤️</span>
+                    </div>
+                </div>
+                
+                <div id="scenario" class="scenario"></div>
+                
+                <div class="timer-container">
+                    <div id="timer-bar" class="timer-bar"></div>
+                </div>
+                
+                <div id="emoji-container" class="emoji-container"></div>
+                
+                <div id="result" class="result"></div>
+                <div id="streak" class="streak"></div>
+                
+                <div id="game-over-container" style="display: none;">
+                    <div class="game-over" id="game-over-text">GAME OVER!</div>
+                    <div class="final-score" id="final-score-text">Punteggio finale: <span id="final-score">0</span></div>
+                    <div class="controls">
+                        <button class="restart-btn" onclick="restartGame()">
+                            <span id="restart-button">Rigioca</span>
+                            <span>🔄</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="skip-btn" onclick="useSkip()">
+                        <span id="skip-button">Salta</span>
+                        <span>⏭️</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ad-sidebar">
+            <div class="ad-banner" id="ad-right-1">Banner Pubblcità<br>(160x250)</div>
+            <div class="ad-banner" id="ad-right-2">Banner Pubblcità<br>(160x250)</div>
+        </div>
+    </div>
+    
+    <div class="ad-bottom" id="ad-bottom">
+        Banner Pubblicitario (728x80)
+    </div>
+
+<script>
+    // Dizionario multilingua
+    const translations = {
+        it: {
+            welcomeTitle: "Emoji Rush 🚀",
+            welcomeText: "Indovina l'emoji corretta per ogni situazione prima che il tempo scada!",
+            howToPlay: "Come giocare:",
+            rule1: "Leggi la situazione descritta",
+            rule2: "Scegli l'emoji che meglio rappresenta la situazione",
+            rule3: "Rispondi prima che la barra del tempo si esaurisca",
+            rule4: "Le risposte corrette consecutive aumentano il tuo punteggio!",
+            rule5: "Hai 3 vite e 3 skip a disposizione",
+            languageLabel: "Lingua:",
+            autoLang: "Auto (Browser)",
+            difficultyLabel: "Livello di difficoltà:",
+            easyLevel: "Facile",
+            mediumLevel: "Medio",
+            hardLevel: "Difficile",
+            startButton: "Inizia a giocare!",
+            gameTitle: "Emoji Rush 🚀",
+            scoreLabel: "Punteggio",
+            highScoreLabel: "Record",
+            livesLabel: "Vite",
+            skipButton: "Salta",
+            skipsLabel: "Skip",
+            correctText: "✔️ Corretto! +",
+            wrongText: "❌ Sbagliato! Era: ",
+            gameOverText: "GAME OVER!",
+            finalScoreText: "Punteggio finale: ",
+            restartButton: "Rigioca",
+            playAgainButton: "Gioca di nuovo",
+            statsTitle: "Statistiche Gioco",
+            scoreLabel: "Punteggio",
+            highscoreLabel: "Record",
+            correctLabel: "Risposte Corrette",
+            wrongLabel: "Risposte Sbagliate",
+            streakLabel: "Serie Massima",
+            skipsLabel: "Skip Usati",
+            scenarios: [
+                { testo: "Ti rubano l'auto", emojiCorretta: "😱" },
+                { testo: "Hai vinto la lotteria", emojiCorretta: "🤩" },
+                { testo: "Il tuo ex ti scrive alle 3 di notte", emojiCorretta: "🙄" },
+                { testo: "Trovi un capello nel tuo cibo", emojiCorretta: "🤢" },
+                { testo: "Un cane ti salta addosso", emojiCorretta: "🐶" },
+                { testo: "Scopri che il tuo capo ti segue su OnlyFans", emojiCorretta: "😳" },
+                { testo: "La bolletta della luce è di 900€", emojiCorretta: "😡" },
+                { testo: "Ti svegli e scopri che è sabato", emojiCorretta: "😌" },
+                { testo: "Il WiFi smette di funzionare", emojiCorretta: "😤" },
+                { testo: "Ricevi un complimento inaspettato", emojiCorretta: "😊" },
+                { testo: "Dimentichi il telefono a casa", emojiCorretta: "😨" },
+                { testo: "Vedi un arcobaleno doppio", emojiCorretta: "🌈" },
+                { testo: "Il tuo post diventa virale", emojiCorretta: "🤯" },
+                { testo: "Trovi 50€ per strada", emojiCorretta: "🤑" },
+                { testo: "Il barista sbaglia il tuo ordine", emojiCorretta: "😒" },
+                { testo: "Il tuo volo viene cancellato", emojiCorretta: "😭" },
+                { testo: "Ti innamori a prima vista", emojiCorretta: "😍" },
+                { testo: "Vedi qualcosa di disgustoso", emojiCorretta: "🤮" },
+                { testo: "Incontri un fantasma", emojiCorretta: "👻" },
+                { testo: "Calpesti una cacca", emojiCorretta: "💩" },
+                { testo: "Ricevi un applauso", emojiCorretta: "👏" },
+                { testo: "Scopri un bugiardo", emojiCorretta: "🤥" },
+                { testo: "Incontri un clown", emojiCorretta: "🤡" },
+                { testo: "Vinci una competizione", emojiCorretta: "🏆" },
+                { testo: "Perdi una competizione", emojiCorretta: "😞" }
+            ]
+        },
+        en: {
+            welcomeTitle: "Emoji Rush 🚀",
+            welcomeText: "Guess the correct emoji for each situation before time runs out!",
+            howToPlay: "How to play:",
+            rule1: "Read the described situation",
+            rule2: "Choose the emoji that best represents the situation",
+            rule3: "Answer before the time bar runs out",
+            rule4: "Consecutive correct answers increase your score!",
+            rule5: "You have 3 lives and 3 skips",
+            languageLabel: "Language:",
+            autoLang: "Auto (Browser)",
+            difficultyLabel: "Difficulty level:",
+            easyLevel: "Easy",
+            mediumLevel: "Medium",
+            hardLevel: "Hard",
+            startButton: "Start Game!",
+            gameTitle: "Emoji Rush 🚀",
+            scoreLabel: "Score",
+            highScoreLabel: "High Score",
+            livesLabel: "Lives",
+            skipButton: "Skip",
+            skipsLabel: "Skips",
+            correctText: "✔️ Correct! +",
+            wrongText: "❌ Wrong! It was: ",
+            gameOverText: "GAME OVER!",
+            finalScoreText: "Final score: ",
+            restartButton: "Play Again",
+            playAgainButton: "Play Again",
+            statsTitle: "Game Statistics",
+            scoreLabel: "Score",
+            highscoreLabel: "High Score",
+            correctLabel: "Correct Answers",
+            wrongLabel: "Wrong Answers",
+            streakLabel: "Max Streak",
+            skipsLabel: "Skips Used",
+            scenarios: [
+                { testo: "Your car gets stolen", emojiCorretta: "😱" },
+                { testo: "You win the lottery", emojiCorretta: "🤩" },
+                { testo: "Your ex texts you at 3am", emojiCorretta: "🙄" },
+                { testo: "You find a hair in your food", emojiCorretta: "🤢" },
+                { testo: "A dog jumps on you", emojiCorretta: "🐶" },
+                { testo: "You discover your boss follows you on OnlyFans", emojiCorretta: "😳" },
+                { testo: "Your electricity bill is €900", emojiCorretta: "😡" },
+                { testo: "You wake up and it's Saturday", emojiCorretta: "😌" },
+                { testo: "The WiFi stops working", emojiCorretta: "😤" },
+                { testo: "You receive an unexpected compliment", emojiCorretta: "😊" },
+                { testo: "You forget your phone at home", emojiCorretta: "😨" },
+                { testo: "You see a double rainbow", emojiCorretta: "🌈" },
+                { testo: "Your post goes viral", emojiCorretta: "🤯" },
+                { testo: "You find €50 on the street", emojiCorretta: "🤑" },
+                { testo: "The barista gets your order wrong", emojiCorretta: "😒" },
+                { testo: "Your flight gets canceled", emojiCorretta: "😭" },
+                { testo: "You fall in love at first sight", emojiCorretta: "😍" },
+                { testo: "You see something disgusting", emojiCorretta: "🤮" },
+                { testo: "You meet a ghost", emojiCorretta: "👻" },
+                { testo: "You step on poop", emojiCorretta: "💩" },
+                { testo: "You receive applause", emojiCorretta: "👏" },
+                { testo: "You catch a liar", emojiCorretta: "🤥" },
+                { testo: "You meet a clown", emojiCorretta: "🤡" },
+                { testo: "You win a competition", emojiCorretta: "🏆" },
+                { testo: "You lose a competition", emojiCorretta: "😞" }
+            ]
+        },
+        es: {
+            welcomeTitle: "Emoji Rush 🚀",
+            welcomeText: "¡Adivina el emoji correcto para cada situación antes de que se acabe el tiempo!",
+            howToPlay: "Cómo jugar:",
+            rule1: "Lee la situación descrita",
+            rule2: "Elige el emoji que mejor represente la situación",
+            rule3: "Responde antes de que se agote la barra de tiempo",
+            rule4: "¡Las respuestas correctas consecutivas aumentan tu puntuación!",
+            rule5: "Tienes 3 vidas y 3 saltos",
+            languageLabel: "Idioma:",
+            autoLang: "Auto (Navegador)",
+            difficultyLabel: "Nivel de dificultad:",
+            easyLevel: "Fácil",
+            mediumLevel: "Medio",
+            hardLevel: "Difícil",
+            startButton: "¡Comenzar a jugar!",
+            gameTitle: "Emoji Rush 🚀",
+            scoreLabel: "Puntuación",
+            highScoreLabel: "Récord",
+            livesLabel: "Vidas",
+            skipButton: "Saltar",
+            skipsLabel: "Saltos",
+            correctText: "✔️ ¡Correcto! +",
+            wrongText: "❌ ¡Incorrecto! Era: ",
+            gameOverText: "¡GAME OVER!",
+            finalScoreText: "Puntuación final: ",
+            restartButton: "Reiniciar",
+            playAgainButton: "Jugar de nuevo",
+            statsTitle: "Estadísticas del Juego",
+            scoreLabel: "Puntuación",
+            highscoreLabel: "Récord",
+            correctLabel: "Respuestas Correctas",
+            wrongLabel: "Respuestas Incorrectas",
+            streakLabel: "Racha Máxima",
+            skipsLabel: "Saltos Usados",
+            scenarios: [
+                { testo: "Te roban el coche", emojiCorretta: "😱" },
+                { testo: "Ganas la lotería", emojiCorretta: "🤩" },
+                { testo: "Tu ex te escribe a las 3 de la mañana", emojiCorretta: "🙄" },
+                { testo: "Encuentras un pelo en tu comida", emojiCorretta: "🤢" },
+                { testo: "Un perro te salta encima", emojiCorretta: "🐶" },
+                { testo: "Descubres que tu jefe te sigue en OnlyFans", emojiCorretta: "😳" },
+                { testo: "Tu factura de la luz es de 900€", emojiCorretta: "😡" },
+                { testo: "Te despiertas y es sábado", emojiCorretta: "😌" },
+                { testo: "El WiFi deja de funcionar", emojiCorretta: "😤" },
+                { testo: "Recibes un cumplido inesperado", emojiCorretta: "😊" },
+                { testo: "Olvidas tu teléfono en casa", emojiCorretta: "😨" },
+                { testo: "Ves un arcoíris doble", emojiCorretta: "🌈" },
+                { testo: "Tu publicación se vuelve viral", emojiCorretta: "🤯" },
+                { testo: "Encuentras 50€ en la calle", emojiCorretta: "🤑" },
+                { testo: "El barista se equivoca con tu pedido", emojiCorretta: "😒" },
+                { testo: "Tu vuelo es cancelado", emojiCorretta: "😭" },
+                { testo: "Te enamoras a primera vista", emojiCorretta: "😍" },
+                { testo: "Ves algo asqueroso", emojiCorretta: "🤮" },
+                { testo: "Conoces un fantasma", emojiCorretta: "👻" },
+                { testo: "Pisas caca", emojiCorretta: "💩" },
+                { testo: "Recibes aplausos", emojiCorretta: "👏" },
+                { testo: "Descubres a un mentiroso", emojiCorretta: "🤥" },
+                { testo: "Conoces a un payaso", emojiCorretta: "🤡" },
+                { testo: "Ganas una competencia", emojiCorretta: "🏆" },
+                { testo: "Pierdes una competencia", emojiCorretta: "😞" }
+            ]
+        },
+        fr: {
+            welcomeTitle: "Emoji Rush 🚀",
+            welcomeText: "Devinez le bon emoji pour chaque situation avant que le temps ne s'écoule!",
+            howToPlay: "Comment jouer:",
+            rule1: "Lisez la situation décrite",
+            rule2: "Choisissez l'emoji qui représente le mieux la situation",
+            rule3: "Répondez avant que la barre de temps ne s'épuise",
+            rule4: "Les bonnes réponses consécutives augmentent votre score!",
+            rule5: "Vous avez 3 vies et 3 sauts",
+            languageLabel: "Langue:",
+            autoLang: "Auto (Navigateur)",
+            difficultyLabel: "Niveau de difficulté:",
+            easyLevel: "Facile",
+            mediumLevel: "Moyen",
+            hardLevel: "Difficile",
+            startButton: "Commencer à jouer!",
+            gameTitle: "Emoji Rush 🚀",
+            scoreLabel: "Score",
+            highScoreLabel: "Meilleur score",
+            livesLabel: "Vies",
+            skipButton: "Passer",
+            skipsLabel: "Sauts",
+            correctText: "✔️ Correct! +",
+            wrongText: "❌ Faux! C'était: ",
+            gameOverText: "GAME OVER!",
+            finalScoreText: "Score final: ",
+            restartButton: "Rejouer",
+            playAgainButton: "Rejouer",
+            statsTitle: "Statistiques du Jeu",
+            scoreLabel: "Score",
+            highscoreLabel: "Meilleur Score",
+            correctLabel: "Réponses Correctes",
+            wrongLabel: "Réponses Incorrectes",
+            streakLabel: "Série Maximale",
+            skipsLabel: "Sauts Utilisés",
+            scenarios: [
+                { testo: "On vous vole votre voiture", emojiCorretta: "😱" },
+                { testo: "Vous gagnez à la loterie", emojiCorretta: "🤩" },
+                { testo: "Votre ex vous envoie un SMS à 3h du matin", emojiCorretta: "🙄" },
+                { testo: "Vous trouvez un cheveu dans votre nourriture", emojiCorretta: "🤢" },
+                { testo: "Un chien vous saute dessus", emojiCorretta: "🐶" },
+                { testo: "Vous découvrez que votre patron vous suit sur OnlyFans", emojiCorretta: "😳" },
+                { testo: "Votre facture d'électricité est de 900€", emojiCorretta: "😡" },
+                { testo: "Vous vous réveillez et c'est samedi", emojiCorretta: "😌" },
+                { testo: "Le WiFi cesse de fonctionner", emojiCorretta: "😤" },
+                { testo: "Vous recevez un compliment inattendu", emojiCorretta: "😊" },
+                { testo: "Vous oubliez votre téléphone à la maison", emojiCorretta: "😨" },
+                { testo: "Vous voyez un double arc-en-ciel", emojiCorretta: "🌈" },
+                { testo: "Votre post devient viral", emojiCorretta: "🤯" },
+                { testo: "Vous trouvez 50€ dans la rue", emojiCorretta: "🤑" },
+                { testo: "Le barista se trompe dans votre commande", emojiCorretta: "😒" },
+                { testo: "Votre vol est annulé", emojiCorretta: "😭" },
+                { testo: "Vous tombez amoureux au premier regard", emojiCorretta: "😍" },
+                { testo: "Vous voyez quelque chose de dégoûtant", emojiCorretta: "🤮" },
+                { testo: "Vous rencontrez un fantôme", emojiCorretta: "👻" },
+                { testo: "Vous marchez sur une crotte", emojiCorretta: "💩" },
+                { testo: "Vous recevez des applaudissements", emojiCorretta: "👏" },
+                { testo: "Vous découvrez un menteur", emojiCorretta: "🤥" },
+                { testo: "Vous rencontrez un clown", emojiCorretta: "🤡" },
+                { testo: "Vous gagnez une compétition", emojiCorretta: "🏆" },
+                { testo: "Vous perdez une compétition", emojiCorretta: "😞" }
+            ]
+        },
+        de: {
+            welcomeTitle: "Emoji Rush 🚀",
+            welcomeText: "Erraten Sie das richtige Emoji für jede Situation, bevor die Zeit abläuft!",
+            howToPlay: "Spielanleitung:",
+            rule1: "Lesen Sie die beschriebene Situation",
+            rule2: "Wählen Sie das Emoji, das die Situation am besten darstellt",
+            rule3: "Antworten Sie, bevor die Zeit abläuft",
+            rule4: "Aufeinanderfolgende richtige Antworten erhöhen Ihre Punktzahl!",
+            rule5: "Sie haben 3 Leben und 3 Überspringen",
+            languageLabel: "Sprache:",
+            autoLang: "Auto (Browser)",
+            difficultyLabel: "Schwierigkeitsgrad:",
+            easyLevel: "Einfach",
+            mediumLevel: "Mittel",
+            hardLevel: "Schwer",
+            startButton: "Spiel starten!",
+            gameTitle: "Emoji Rush 🚀",
+            scoreLabel: "Punkte",
+            highScoreLabel: "Highscore",
+            livesLabel: "Leben",
+            skipButton: "Überspringen",
+            skipsLabel: "Überspringen",
+            correctText: "✔️ Richtig! +",
+            wrongText: "❌ Falsch! Es war: ",
+            gameOverText: "GAME OVER!",
+            finalScoreText: "Endstand: ",
+            restartButton: "Nochmal spielen",
+            playAgainButton: "Nochmal spielen",
+            statsTitle: "Spielstatistiken",
+            scoreLabel: "Punkte",
+            highscoreLabel: "Highscore",
+            correctLabel: "Richtige Antworten",
+            wrongLabel: "Falsche Antworten",
+            streakLabel: "Höchste Serie",
+            skipsLabel: "Übersprungen",
+            scenarios: [
+                { testo: "Ihr Auto wird gestohlen", emojiCorretta: "😱" },
+                { testo: "Sie gewinnen im Lotto", emojiCorretta: "🤩" },
+                { testo: "Ihr Ex schreibt Ihnen um 3 Uhr morgens", emojiCorretta: "🙄" },
+                { testo: "Sie finden ein Haar in Ihrem Essen", emojiCorretta: "🤢" },
+                { testo: "Ein Hund springt Sie an", emojiCorretta: "🐶" },
+                { testo: "Sie entdecken, dass Ihr Chef Sie auf OnlyFans folgt", emojiCorretta: "😳" },
+                { testo: "Ihre Stromrechnung beträgt 900€", emojiCorretta: "😡" },
+                { testo: "Sie wachen auf und es ist Samstag", emojiCorretta: "😌" },
+                { testo: "Das WiFi funktioniert nicht mehr", emojiCorretta: "😤" },
+                { testo: "Sie erhalten ein unerwartetes Kompliment", emojiCorretta: "😊" },
+                { testo: "Sie vergessen Ihr Handy zu Hause", emojiCorretta: "😨" },
+                { testo: "Sie sehen einen doppelten Regenbogen", emojiCorretta: "🌈" },
+                { testo: "Ihr Beitrag wird viral", emojiCorretta: "🤯" },
+                { testo: "Sie finden 50€ auf der Straße", emojiCorretta: "🤑" },
+                { testo: "Der Barista macht einen Fehler bei Ihrer Bestellung", emojiCorretta: "😒" },
+                { testo: "Ihr Flug wird storniert", emojiCorretta: "😭" },
+                { testo: "Sie verlieben sich auf den ersten Blick", emojiCorretta: "😍" },
+                { testo: "Sie sehen etwas Ekelerregendes", emojiCorretta: "🤮" },
+                { testo: "Sie treffen einen Geist", emojiCorretta: "👻" },
+                { testo: "Sie treten in Hundekot", emojiCorretta: "💩" },
+                { testo: "Sie erhalten Applaus", emojiCorretta: "👏" },
+                { testo: "Sie entlarven einen Lügner", emojiCorretta: "🤥" },
+                { testo: "Sie treffen einen Clown", emojiCorretta: "🤡" },
+                { testo: "Sie gewinnen einen Wettbewerb", emojiCorretta: "🏆" },
+                { testo: "Sie verlieren einen Wettbewerb", emojiCorretta: "😞" }
+            ]
+        }
+    };
+
+    const emojiPool = ["😱","😂","😡","🤢","🤩","🙄","😳","😭","😅","🤔","🐶","😌","😤","😊","😨","🌈","🤯","🤑","😒","😍","🤮","👻","💩","👏","🤡","🤥","🏆","😞","🎉","🤪","🧐","😴"];
+    
+    // Variabili di gioco
+    let score = 0;
+    let highScore = localStorage.getItem('highScore') || 0;
+    let lives = 3;
+    let skips = 3;
+    let timer;
+    let timeLeft = 100;
+    let currentScenario;
+    let streak = 0;
+    let maxEmojis = 9;
+    let gameActive = false;
+    let currentLanguage = 'it';
+    let correctAnswers = 0;
+    let wrongAnswers = 0;
+    let maxStreak = 0;
+    let totalSkipsUsed = 0;
+    
+    // Rileva la lingua del browser
+    function detectBrowserLanguage() {
+        const browserLang = navigator.language || navigator.userLanguage;
+        const langCode = browserLang.split('-')[0];
+        
+        if (translations[langCode]) {
+            return langCode;
+        }
+        return 'en'; // Fallback su inglese
+    }
+    
+    // Imposta la lingua
+    function setLanguage(lang) {
+        currentLanguage = lang;
+        const langData = translations[lang];
+        
+        // Aggiorna il popup
+        if (document.getElementById('welcome-title')) {
+            document.getElementById('welcome-title').textContent = langData.welcomeTitle;
+            document.getElementById('welcome-text').textContent = langData.welcomeText;
+            document.getElementById('how-to-play').textContent = langData.howToPlay;
+            document.getElementById('rule1').textContent = langData.rule1;
+            document.getElementById('rule2').textContent = langData.rule2;
+            document.getElementById('rule3').textContent = langData.rule3;
+            document.getElementById('rule4').textContent = langData.rule4;
+            document.getElementById('rule5').textContent = langData.rule5;
+            document.getElementById('language-label').textContent = langData.languageLabel;
+            document.getElementById('auto-lang').textContent = langData.autoLang;
+            document.getElementById('difficulty-label').textContent = langData.difficultyLabel;
+            document.getElementById('easy-level').textContent = langData.easyLevel;
+            document.getElementById('medium-level').textContent = langData.mediumLevel;
+            document.getElementById('hard-level').textContent = langData.hardLevel;
+            document.getElementById('start-button').textContent = langData.startButton;
+        }
+        
+        // Aggiorna il gioco
+        document.getElementById('game-title').textContent = langData.gameTitle;
+        document.getElementById('skip-button').textContent = langData.skipButton;
+        document.getElementById('restart-button').textContent = langData.restartButton;
+        document.getElementById('game-over-text').textContent = langData.gameOverText;
+        document.getElementById('final-score-text').textContent = langData.finalScoreText;
+        document.getElementById('play-again-button').textContent = langData.playAgainButton;
+        document.getElementById('stats-title').textContent = langData.statsTitle;
+        document.getElementById('score-label').textContent = langData.scoreLabel;
+        document.getElementById('highscore-label').textContent = langData.highscoreLabel;
+        document.getElementById('correct-label').textContent = langData.correctLabel;
+        document.getElementById('wrong-label').textContent = langData.wrongLabel;
+        document.getElementById('streak-label').textContent = langData.streakLabel;
+        document.getElementById('skips-label').textContent = langData.skipsLabel;
+        
+        // Aggiorna la selezione della lingua
+        document.getElementById('language-select').value = lang;
+        document.getElementById('language-change').value = lang;
+    }
+    
+    // Cambia lingua durante il gioco
+    function changeLanguage() {
+        const newLang = document.getElementById('language-change').value;
+        setLanguage(newLang);
+    }
+    
+    // Mostra il popup all'inizio
+    function showIntro() {
+        // Imposta la lingua automatica se selezionata
+        const selectedLang = document.getElementById('language-select').value;
+        if (selectedLang === 'auto') {
+            const browserLang = detectBrowserLanguage();
+            setLanguage(browserLang);
+            document.getElementById('language-select').value = 'auto';
+            document.getElementById('language-change').value = browserLang;
+        } else {
+            setLanguage(selectedLang);
+        }
+        
+        document.getElementById('intro-popup').style.display = 'flex';
+    }
+    
+    // Nasconde il popup e inizia il gioco
+    function startGame() {
+        // Imposta la difficoltà
+        maxEmojis = parseInt(document.getElementById('difficulty-select').value);
+        
+        // Imposta la lingua definitiva
+        const selectedLang = document.getElementById('language-select').value;
+        if (selectedLang === 'auto') {
+            setLanguage(detectBrowserLanguage());
+        } else {
+            setLanguage(selectedLang);
+        }
+        
+        // Resetta le statistiche
+        correctAnswers = 0;
+        wrongAnswers = 0;
+        maxStreak = 0;
+        totalSkipsUsed = 0;
+        skips = 3;
+        document.getElementById('skips').textContent = skips;
+        document.getElementById('skip-btn').disabled = false;
+        
+        document.getElementById('intro-popup').style.display = 'none';
+        gameActive = true;
+        nuovoScenario();
+    }
+    
+    // Usa uno skip
+    function useSkip() {
+        if (!gameActive || skips <= 0) return;
+        
+        skips--;
+        totalSkipsUsed++;
+        document.getElementById('skips').textContent = skips;
+        
+        if (skips <= 0) {
+            document.getElementById('skip-btn').disabled = true;
+        }
+        
+        nuovoScenario();
+    }
+    
+    function nuovoScenario() {
+        if (!gameActive) return;
+        
+        clearInterval(timer);
+        timeLeft = 100;
+        document.getElementById('timer-bar').style.width = '100%';
+        
+        const langData = translations[currentLanguage];
+        
+        // Scegli uno scenario casuale, evitando di ripetere lo stesso due volte di fila
+        let newScenario;
+        do {
+            newScenario = langData.scenarios[Math.floor(Math.random() * langData.scenarios.length)];
+        } while (currentScenario && newScenario.testo === currentScenario.testo);
+        
+        currentScenario = newScenario;
+        document.getElementById('scenario').textContent = currentScenario.testo;
+        
+        let emojis = [currentScenario.emojiCorretta];
+        while (emojis.length < maxEmojis) {
+            const rand = emojiPool[Math.floor(Math.random() * emojiPool.length)];
+            if (!emojis.includes(rand)) emojis.push(rand);
+        }
+        
+        // Mescola le emoji
+        emojis = shuffleArray(emojis);
+        
+        const container = document.getElementById('emoji-container');
+        container.innerHTML = "";
+        emojis.forEach(emoji => {
+            const btn = document.createElement('button');
+            btn.className = 'emoji-btn';
+            btn.textContent = emoji;
+            btn.onclick = () => checkEmoji(emoji);
+            container.appendChild(btn);
+        });
+        
+        document.getElementById('result').textContent = "";
+        document.getElementById('result').className = "result";
+        
+        // Avvia il timer
+        timer = setInterval(() => {
+            timeLeft -= 0.5;
+            document.getElementById('timer-bar').style.width = timeLeft + '%';
+            
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                wrongAnswer();
+            }
+        }, 50);
+    }
+    
+    function checkEmoji(selected) {
+        if (!gameActive) return;
+        
+        clearInterval(timer);
+        
+        if (selected === currentScenario.emojiCorretta) {
+            correctAnswer();
+        } else {
+            wrongAnswer();
+        }
+    }
+    
+    function correctAnswer() {
+        const langData = translations[currentLanguage];
+        
+        streak++;
+        if (streak > maxStreak) {
+            maxStreak = streak;
+        }
+        correctAnswers++;
+        score += streak; // Bonus per risposte consecutive corrette
+        document.getElementById('score').textContent = score;
+        
+        document.getElementById('result').textContent = langData.correctText + streak;
+        document.getElementById('result').className = "result correct";
+        
+        if (streak >= 3) {
+            document.getElementById('streak').textContent = "🔥 " + streak + " in a row!";
+        }
+        
+        // Animazione vittoria
+        const correctBtn = Array.from(document.querySelectorAll('.emoji-btn'))
+            .find(btn => btn.textContent === currentScenario.emojiCorretta);
+        if (correctBtn) {
+            correctBtn.style.transform = 'scale(1.2)';
+            correctBtn.style.background = 'rgba(76, 201, 240, 0.3)';
+            correctBtn.style.boxShadow = '0 0 20px rgba(76, 201, 240, 0.5)';
+            setTimeout(() => {
+                correctBtn.style.transform = '';
+                correctBtn.style.background = '';
+                correctBtn.style.boxShadow = '';
+                nuovoScenario();
+            }, 800);
+        } else {
+            nuovoScenario();
+        }
+    }
+    
+    function wrongAnswer() {
+        const langData = translations[currentLanguage];
+        
+        streak = 0;
+        wrongAnswers++;
+        lives--;
+        document.getElementById('streak').textContent = "";
+        
+        // Aggiorna le vite visualizzate
+        const livesElement = document.getElementById('lives');
+        livesElement.innerHTML = '';
+        for (let i = 0; i < 3; i++) {
+            const heart = document.createElement('span');
+            heart.className = 'life' + (i >= lives ? ' lost' : '');
+            heart.textContent = '❤️';
+            livesElement.appendChild(heart);
+        }
+        
+        document.getElementById('result').textContent = langData.wrongText + currentScenario.emojiCorretta;
+        document.getElementById('result').className = "result wrong";
+        
+        // Evidenzia l'emoji corretta
+        const correctBtn = Array.from(document.querySelectorAll('.emoji-btn'))
+            .find(btn => btn.textContent === currentScenario.emojiCorretta);
+        if (correctBtn) {
+            correctBtn.style.transform = 'scale(1.2)';
+            correctBtn.style.background = 'rgba(239, 35, 60, 0.3)';
+            correctBtn.style.boxShadow = '0 0 20px rgba(239, 35, 60, 0.5)';
+        }
+        
+        // Animazione sbagliato
+        const selectedBtn = Array.from(document.querySelectorAll('.emoji-btn'))
+            .find(btn => btn.textContent !== currentScenario.emojiCorretta && btn.style.transform.includes('scale(1.05)'));
+        if (selectedBtn) {
+            selectedBtn.classList.add('shake');
+            setTimeout(() => {
+                selectedBtn.classList.remove('shake');
+            }, 500);
+        }
+        
+        if (lives <= 0) {
+            gameOver();
+        } else {
+            setTimeout(() => {
+                if (correctBtn) {
+                    correctBtn.style.transform = '';
+                    correctBtn.style.background = '';
+                    correctBtn.style.boxShadow = '';
+                }
+                nuovoScenario();
+            }, 1500);
+        }
+    }
+    
+    function gameOver() {
+        gameActive = false;
+        clearInterval(timer);
+        
+        // Aggiorna il record se necessario
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('highScore', highScore);
+            document.getElementById('high-score').textContent = highScore;
+        }
+        
+        document.getElementById('final-score').textContent = score;
+        
+        // Mostra le statistiche
+        showStats();
+    }
+    
+    function showStats() {
+        document.getElementById('final-score-stat').textContent = score;
+        document.getElementById('high-score-stat').textContent = highScore;
+        document.getElementById('correct-answers').textContent = correctAnswers;
+        document.getElementById('wrong-answers').textContent = wrongAnswers;
+        document.getElementById('max-streak').textContent = maxStreak;
+        document.getElementById('skips-used').textContent = totalSkipsUsed + "/3";
+        
+        document.getElementById('stats-popup').style.display = 'flex';
+    }
+    
+    function restartFromStats() {
+        document.getElementById('stats-popup').style.display = 'none';
+        restartGame();
+    }
+    
+    function restartGame() {
+        score = 0;
+        lives = 3;
+        streak = 0;
+        skips = 3;
+        gameActive = true;
+        
+        document.getElementById('score').textContent = score;
+        document.getElementById('lives').innerHTML = '<span class="life">❤️</span><span class="life">❤️</span><span class="life">❤️</span>';
+        document.getElementById('skips').textContent = skips;
+        document.getElementById('skip-btn').disabled = false;
+        document.getElementById('streak').textContent = "";
+        document.getElementById('game-over-container').style.display = 'none';
+        document.querySelector('.controls').style.display = 'flex';
+        
+        // Resetta le statistiche
+        correctAnswers = 0;
+        wrongAnswers = 0;
+        maxStreak = 0;
+        totalSkipsUsed = 0;
+        
+        nuovoScenario();
+    }
+    
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+    
+    // Mostra il popup all'inizio
+    showIntro();
+</script>
+
+</body>
+</html>
